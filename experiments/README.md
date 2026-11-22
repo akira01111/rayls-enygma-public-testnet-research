@@ -11,3 +11,7 @@ Rules:
 - Testnet only. No mainnet activity, no spending beyond testnet gas.
 - Results are observations first; any conclusion goes in `findings/`
   with its evidence label.
+
+## Completed experiments
+
+- Week 2 private-payment TX audit — see `transactions/tx-09edab2b/`.

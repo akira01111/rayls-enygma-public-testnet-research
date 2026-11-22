@@ -11,3 +11,11 @@ evidence — each entry cites the `raw-data/` it rests on.
 
 Direct observations are recorded in `raw-data/` and referenced from the
 finding they support.
+
+## Current findings records
+
+- Week 2 TX audit findings live in
+  `experiments/transactions/tx-09edab2b/decoded/audit_summary.json`
+  (labelled per question) and in `TX-AUDIT-REPORT.md` in the same package.
+  They have not been copied into the folders above — the package is the
+  canonical record, to avoid duplicate copies drifting apart.
