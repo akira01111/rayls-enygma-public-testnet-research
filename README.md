@@ -1,146 +1,80 @@
-# rayls-enygma-public-testnet-research
+# Rayls Enygma public testnet research
 
-Independent research on the Rayls Enygma Public Testnet: architecture, deployment
-configuration, observable on-chain activity, and hands-on testnet experiments.
-The goal is to help the community understand what Enygma is, how it works,
-and what can actually be verified — nothing more.
+The research examines Rayls Enygma Public Testnet deployment details, public on-chain activity, and testnet experiments. Findings are labeled as verified facts, official claims, direct observations, reconstructions, inferences, or unknowns.
 
 ## Research question
 
-What can the public actually see when two accounts make a private transfer
-on Rayls Enygma?
+What can the public actually see when two accounts make a private transfer on Rayls Enygma?
+
+## Start here
+
+- [Index](INDEX.md): browse the evidence, datasets, audit packages, open questions, and file history.
+- [Reproduction guide](REPRODUCE.md): verify the saved packages or repeat the read-only checks.
+- [Research trail](RESEARCH-TRAIL.md): chronological account of the work and unresolved questions.
 
 ## Network
 
-- Chain: Rayls Enygma Public Testnet, chain ID 7295799 (0x6f5337)
+- Chain: Rayls Enygma Public Testnet
+- Chain ID: `7295799` (`0x6f5337`)
 - RPC: https://testnet-rpc.rayls.com
 - Explorer: https://testnet-explorer.rayls.com
 
-## Verified results
+## Current findings
 
-Every row carries its evidence label. **Governing interpretation: r3 +
-addendum F17** (`experiments/testnet-journeys/week2-private-payment/`).
-Labels in `experiments/transactions/tx-09edab2b/decoded/audit_summary.json`
-/ the initial TX report that differ from r3 — for example statement[8] as
-"total fee" stated as a verified fact — are superseded; see INDEX.md §4
-and the divergence table in the restructure note (INDEX.md §11).
+The latest interpretation of the Week 2 private-payment experiment is in the [r3 article audit](experiments/testnet-journeys/week2-private-payment/ARTICLE-AUDIT-2026-11-22-r3.md) and [F17 addendum](experiments/testnet-journeys/week2-private-payment/ARTICLE-AUDIT-2026-11-22-addendum-f17.md). Those documents govern when earlier classifications differ.
 
-| Finding | Value | Classification |
-|---|---|---|
-| Transaction | `0x09edab2b…25bb`, block 24825928, 21 Nov 2026 09:40:42 UTC (16:40:42 WIB); 1 tx in the block | verified-fact |
-| Sender (tx.from) | Relayer `0xa5f0c684…0ac8` (registry username `rayls-relayer`) | verified-fact |
-| Destination | SharedVaultProxy `0x9c5ad5e5…06c2`; implementation `0xAd966704…091c` (EIP-1967 slot) | verified-fact (addresses); implementation source = unknown |
-| Logs | 7, all from the vault proxy: 1 Nullifier, 3 Commitment, 3 EncryptedNote | verified-fact (counts + topics); event names = signature match, not verified source |
-| statement[8] | Integer 4,416,000,000,000,000,000 wei | verified-fact (integer); RLS unit = interpretation; "total fee" = inference |
-| Chain gas | 63,168,048,000,000,000 wei = 0.063168048 (1,316,001 gas × 48 Gwei) | verified-fact (wei); token identity disputed (RLS vs USDr, r3 §3.3) |
-| Related tx | `0xacc7d175…09b2`, block 24825932 (+3 s), 0.576 RLS to `0x71af…` | verified-fact (transfer); role as foundation fee = reconstruction; recipient identity = unknown |
-| Registry | 195 UsernameSet logs; @anara → `0x0c5b…0b5`, @kittynim → `0x680d…0efc` | verified-fact (kittynim owner-confirmed 22 Nov 2026) |
-| Sender/receiver link | This tx was made on behalf of @anara for @kittynim | reconstruction (no on-chain link; rests on experiment context) |
-| TX verifier | `scripts/verify_tx_audit_09edab2b.py` 23/23 PASS | integrity + consistency only — not proof of interpretations |
-| Comparator v2.1.1 | CERTIFIED 22 Nov 2026 12:33 WIB (regression 8/8, real run 9/9, 15 negatives rejected) | scope: comparator + recorded test scope only |
+| Finding | Evidence-based summary |
+|---|---|
+| Transaction | `0x09edab2b...25bb`, block `24825928`; one transaction in the block. |
+| Sender and destination | The transaction was sent by relayer `0xa5f0c684...0ac8` to SharedVaultProxy `0x9c5ad5e5...06c2`. The implementation source is not verified. |
+| Logs | Seven logs came from the vault proxy: one Nullifier, three Commitment, and three EncryptedNote topics. These names are signature matches, not verified source declarations. |
+| Statement word 8 | Integer `4,416,000,000,000,000,000` wei = verified fact; the RLS unit = interpretation; the meaning "total fee" = inference. |
+| Chain gas | `0.063168048` native units, derived from gas used and the effective gas price. The token identity is unresolved (RLS or USDr). |
+| Related transfer | A separate `0.576 RLS` transfer appears four blocks later. Its recipient identity and purpose are unknown. |
+| Account association | The link between this transaction, `@anara`, and `@kittynim` is a reconstruction from experiment context; the chain does not establish that link. |
 
-## Method
+## Research method
 
-- Fetch via curl with a browser User-Agent (stdlib Python scripts in
-  `scripts/`), raw responses saved as provenance envelopes and never edited.
-- Decode with the demo-bundle ABI (`transferV2` selector `0xaacd552c`,
-  verified by keccak256 of the canonical signature); event names resolved
-  by keccak-matching topic0 against bundle-ABI signatures.
-- Independent verification: `scripts/verify_tx_audit_09edab2b.py`
-  re-derives the TX package from the raw files (manifest 20/20,
-  verifier 23/23). Re-fetch verification (stage 1, 22 Nov 2026) re-ran
-  the fetch and compared raw hashes 9/9 identical.
-- Machine-readable summary: `audit_report.json` (root, generated by
-  `datasets/build_datasets.py`) and tabular datasets in `datasets/`
-  (4 CSVs + build/verify scripts + checksums). `audit_report.json`
-  separates `integrity` (PASS = data integrity + internal consistency
-  only) from `findings` (each finding carries its own classification).
+On-chain observations came from read-only JSON-RPC and Explorer queries. Fetch scripts save request and response structures as provenance records, not byte-for-byte HTTP captures. The transaction decoder reads those saved files and the client-side demo ABI, then matches the function selector and event topics. These signature matches do not verify the deployed contracts' internal logic.
 
-## Reproduce
+The [r3 audit](experiments/testnet-journeys/week2-private-payment/ARTICLE-AUDIT-2026-11-22-r3.md) and [F17 addendum](experiments/testnet-journeys/week2-private-payment/ARTICLE-AUDIT-2026-11-22-addendum-f17.md) govern finding classifications.
 
-```bash
-python3 datasets/verify_datasets.py          # 9/9 checks PASS
-python3 scripts/verify_tx_audit_09edab2b.py  # 23/23 checks PASS
-python3 scripts/01_network_identity.py       # Module 01; writes a NEW run (needs live RPC)
+## Primary sources
+
+- [Rayls testnet JSON-RPC](https://testnet-rpc.rayls.com) and [Rayls testnet Explorer](https://testnet-explorer.rayls.com/) are the on-chain data endpoints used by the fetch scripts.
+- [Enygma Public testnet app](https://enygma-testnet.rayls.com/) is the source of the client-side ABI extraction stored at `experiments/transactions/tx-09edab2b/decoded/bundle-abi-extract.json`. It is not verified contract source.
+- [Try Enygma Public on testnet](https://docs.rayls.com/docs/try-enygma-public-on-testnet) and [How Enygma Public works](https://docs.rayls.com/docs/how-enygma-public-works) are official documentation (accessed 22 Nov 2026) and describe Rayls' claims. They do not establish what the examined transaction did beyond what the on-chain evidence shows.
+
+## Verify the saved evidence
+
+Run from the repository root:
+
+```sh
+python3 datasets/verify_datasets.py  # dataset verifier
+python3 scripts/verify_tx_audit_09edab2b.py  # transaction verifier
 ```
 
-Full steps, including the /tmp scratch-copy procedure and what each step
-can and cannot repeat, are in `REPRODUCE.md`.
+The [dataset verifier](datasets/verify_datasets.py) independently derives the CSVs, checks fields in `audit_report.json` against the sources, and checks the manifests and checksums. The separate [transaction verifier](scripts/verify_tx_audit_09edab2b.py) checks the raw and decoded transaction package. The recorded results are 9/9 and 23/23 checks, respectively; these confirm integrity and internal consistency, not interpretations. Verifier v1.0.1 expects the checkout at `~/workspace/rayls-enygma-public-testnet-research`; the dataset verifier resolves the repository relative to its own file. See the [reproduction guide](REPRODUCE.md) for the procedure and limits.
 
-## Structure
+## Repository map
 
-- `audit_report.json` — machine-readable summary (generated, never hand-edited).
-- `datasets/` — tabular data derived from the TX package JSONs (4 CSVs +
-  build/verify scripts + checksums + README).
-- `experiments/transactions/tx-09edab2b/` — the TX audit package (raw JSON,
-  decoded JSON, manifest, report, gaps, TODO, addendum).
-- `experiments/testnet-journeys/week2-private-payment/` — the Week 2 video
-  journey + article audit r3 + addendum F17.
-- `runs/` — Module 01 runs (raw JSON + CSV + metadata + checksums) and the
-  Module 01 change report (`runs/01-no-overwrite-fix-report.md`).
-- `scripts/` — read-only audit and reproduction scripts.
-- `contracts/` — ABIs, source references, deployment configuration, and the
-  machine-readable contract map (`contracts/addresses/addresses.json`).
-- `raw-data/` — raw evidence exactly as captured (screenshots, videos).
-  Never modified.
-- `audit-reports/` — verbatim copies of audit reports, never edited after copying.
-- `findings/` — findings taxonomy (the TX findings live in the TX package's
-  `audit_summary.json`, not copied here).
-- `tickets/` — draft questions for the Rayls team (DRAFT, not sent; excluded
-  from the current public batch — local draft for separate revision).
-- `INDEX.md` — full index (sizes, hashes, status, path history).
-  `RESEARCH-TRAIL.md` — chronological trail. `REPRODUCE.md` — reproduction guide.
+- [Index](INDEX.md) - complete file guide, provenance, status, and path history.
+- [Research trail](RESEARCH-TRAIL.md) - chronological work log and open questions.
+- [Reproduction guide](REPRODUCE.md) - commands and reproduction limits.
+- [Audit reports](audit-reports/) - initial audit report and provenance note.
+- [Transaction package guide](experiments/transactions/tx-09edab2b/README.md) - map of the raw responses, decoded data, derived datasets, scripts, manifest, and reports.
+- [Week 2 journey](experiments/testnet-journeys/week2-private-payment/) - public video files and the governing article audit.
+- [Datasets](datasets/) - derived CSVs, build and verification scripts, and checksums.
+- [Runs](runs/) - Network Identity Audit evidence and run notes.
+- [Contracts](contracts/) - addresses, ABIs, and verified-source status.
+- [Raw data](raw-data/) - captured screenshots and public video assets.
+- [Scripts](scripts/) - audit and reproduction scripts.
+- [Findings](findings/) - classification rules.
 
-## Interpretation and limitations
+## Scope and limitations
 
-From r3 §7 + addendum F17. What is NOT proven: the identity of `0x71af…`
-and the purpose of the 0.576 RLS transfer; what statement[0, 1, 2, 9]
-mean; the contents of the encrypted notes; the vault implementation's
-source code (no verified source); whether the relayer's displayed
-"0.58 Rayls Foundation (15%)" fee is the same movement as the 0.576 RLS
-transfer (reconstruction, not proof); the gas-token identity (RLS vs
-USDr — open question Q-B). The initial audit's conclusion stands unless
-new evidence appears: selective auditing on this deployment cannot be
-independently verified. Docs-review rules (source URL + access date per
-note; claims kept as claims; conflicts kept unresolved) live in
-INDEX.md §10.
+This repository does not establish the identity of `0x71af...`, the purpose of the related `0.576 RLS` transfer, the meaning of statement words `[0]`, `[1]`, `[2]`, and `[9]`, the contents of encrypted notes, or the deployed vault implementation's source code. It also does not establish whether the relayer's displayed "0.58 Rayls Foundation (15%)" fee corresponds to that transfer. Selective auditing on this deployment could not be independently verified in the initial audit. See the [governing interpretation](experiments/testnet-journeys/week2-private-payment/ARTICLE-AUDIT-2026-11-22-r3.md), the [F17 addendum](experiments/testnet-journeys/week2-private-payment/ARTICLE-AUDIT-2026-11-22-addendum-f17.md), and [open questions](RESEARCH-TRAIL.md) for detail.
 
-## Official references
+## Public snapshot
 
-- Rayls docs and explorer (see `contracts/verified-source/README.md` for
-  what is and is not verified source).
-- Rayls Enygma demo bundle ABI (extracted from the client bundle;
-  canonical home: `experiments/transactions/tx-09edab2b/decoded/bundle-abi-extract.json`).
-- Canton-style source snapshot: raw RPC responses in the TX package
-  (`raw/`, retrieved 21 Nov 2026) + re-fetch run 22 Nov 2026.
-
-## Status
-
-- **Published (22 Nov 2026 18:34 WIB):** commit `e004dd1`, branch `main`,
-  80 files. Pushed to `https://github.com/akira01111/rayls-enygma-public-testnet-research.git`.
-- **Restructured — Phase 1 (22 Nov 2026):** root `audit_report.json` +
-  `datasets/`, 12 empty-folder READMEs removed (rules transplanted, see
-  INDEX.md §11), Module 01 change report moved to `runs/`. No raw evidence,
-  TX package, journey, runs data, scripts, or frozen docs changed.
-  One commit, not pushed — push only after Anara's separate approval.
-- **Module 01 — Network Identity Audit (21 Nov 2026):** PASS 9/9 (v1.0.0)
-  and PASS 13/13 (v1.0.1, two runs). Evidence in `runs/`, script in
-  `scripts/01_network_identity.py`, change report in
-  `runs/01-no-overwrite-fix-report.md`. Review PDFs in `pdf/` are local only,
-  never committed.
-- **Week 2 TX audit — `0x09edab2b…` (21–22 Nov 2026):** transferV2 payment
-  audit, verified with an independent script (23/23 checks). Evidence package:
-  `experiments/transactions/tx-09edab2b/` (raw JSON, decoded JSON, manifest,
-  report, gaps, TODO, addendum). Receiver @kittynim → `0x680d…0efc`
-  (on-chain verified + owner-confirmed 22 Nov 2026).
-- **Re-fetch verification — stage 1 CLOSED (22 Nov 2026):** comparator
-  v2.1.1 CERTIFIED 12:33 WIB (regression test 8/8 PASS, real run 9/9 PASS,
-  15 integrated negative tests rejected as expected, dynamic-only PASS).
-  Scope: the certification covers ONLY comparator v2.1.1 and the recorded
-  test scope — NOT the whole repo and NOT all Rayls audit claims.
-- **Initial audit report (21 Nov 2026):** verbatim copy in `audit-reports/`
-  (SHA-256 `1d2ab730a6df4abc99af830ac1ef4e3a7d8845b3b78ee51c9a7dcda51c50c711`).
-- **Week 2 video journey:** `experiments/testnet-journeys/week2-private-payment/`
-  (finals, inputs, manifest).
-- **Index / trail / reproduce:** `INDEX.md`, `RESEARCH-TRAIL.md`, `REPRODUCE.md`.
-- No article drafts yet. No ticket has been sent to the Rayls team yet.
+The public `main` branch points to `deb3d09` ("Restructure repo presentation (Phase 1)", 22 Nov 2026).

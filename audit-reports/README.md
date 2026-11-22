@@ -31,3 +31,18 @@ an old one.
   journey (`experiments/testnet-journeys/week2-private-payment/`). Findings
   from those packages are dated and pathed on every reference; nothing in
   this report was rewritten to match them.
+- **English translation (22 Nov 2026, on Anara's instruction):**
+  `ENYGMA-TESTNET-AUDIT-REPORT.md` is now the English translation of the
+  Indonesian original (promoted to the main version 22 Nov 2026 ~23:52 WIB
+  on Anara's approval, after `cmp` byte-identical verification against the
+  checked `.en.md` file, which was then removed as a duplicate). 617 lines,
+  65,433 bytes, SHA-256
+  `13622c8faf80ab4c70077d8976b7d8893b34ebebe41f06f9174e3dd98ce76b10`.
+  Verification (QA report: `TRANSLATION-QA-REPORT.md`): same 617 lines and
+  62 headings as the original; every 0x-hex string, URL, and number matches
+  the original section by section (only Indonesian/English number-separator
+  formatting differs); no Indonesian text remains; conclusions and
+  classifications unchanged. This is a translation, not a verbatim copy of
+  the Indonesian source. The Indonesian original is preserved as
+  `ENYGMA-TESTNET-AUDIT-REPORT.id.md` (SHA-256
+  `1d2ab730a6df4abc99af830ac1ef4e3a7d8845b3b78ee51c9a7dcda51c50c711`).
