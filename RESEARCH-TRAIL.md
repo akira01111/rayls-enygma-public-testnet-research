@@ -64,7 +64,7 @@ no-overwrite redesign (unique run IDs, exclusive writes, chmod 444, manifest
 covers script + report) after Anara's review.
 **Output:** `runs/20261121T054711Z/`, `runs/20261121T063234Z/`,
 `runs/20261121T063327Z/`, `runs/README.md`,
-`01-no-overwrite-fix-report.md`. Review PDFs in `pdf/` are local-only.
+`runs/01-no-overwrite-fix-report.md`. Review PDFs in `pdf/` are local-only.
 
 ## 21 Nov 2026 — repository created (12:13–12:20 WIB)
 
@@ -489,6 +489,27 @@ file). (6) INDEX / RESEARCH-TRAIL / REPRODUCE updated to reference r3
 + addendum and the public versions; journey manifest 16/16 verified;
 root README `tickets/` line corrected (draft, not sent). No staging,
 commit, push, or ticket send.
+
+## 22 Nov 2026 — repo restructure Phase 1 (presentation)
+
+Reason: the GitHub homepage read as an archive of nested Markdown folders
+(6 files + 10 folders at root; 13 folders holding only one README each),
+while the scripts, JSON evidence, and CSVs were buried 2–4 levels deep.
+Anara asked for the research surface to be visible from the root, using
+`rayls-mainnet-block-research` as a display reference only (not its
+content or methodology). Approved in principle 22 Nov 2026 with 9
+corrections (v2 plan); execution approved the same evening. Phase 2
+(path-robustness for the TX scripts) deferred to separate work — TX
+scripts, manifests, and verifier untouched.
+
+Changes (one commit, not pushed):
+- Moved: `01-no-overwrite-fix-report.md` (root) → `runs/01-no-overwrite-fix-report.md` (byte-identical).
+- Created: `audit_report.json` (root, generated — integrity PASS vs findings classifications kept separate) + `datasets/` content: `tx_logs.csv` (7 rows), `registry_usernames.csv` (195 rows), `statement.csv` (10 rows, r3/F17 labels), `relayer_txs.csv` (2 rows, dedup), `build_datasets.py`, `verify_datasets.py`, `datasets_checksums.sha256`. All derived by script from 11 TX-package JSONs; `verify_datasets.py` 9/9 PASS.
+- Deleted: 12 empty-folder READMEs — `docs-review/`, `findings/` ×5, `raw-data/` ×4, `contracts/interactions/`, `contracts/token-flows/`. Their rules were transplanted verbatim first: token-flows (four-separation) + interactions → `contracts/README.md`; docs-review → INDEX.md §10; findings entry rules → `findings/README.md`; raw-data storage rules → `raw-data/README.md`.
+- Edited (living docs only): `README.md` (rewritten in the reference shape), `INDEX.md` (§10 Docs review + §11 path history + datasets rows), `REPRODUCE.md` (§8 datasets), `contracts/README.md`, `findings/README.md`, `raw-data/README.md`, `datasets/README.md`, `runs/README.md`, and this file (this entry).
+- Kept: `tickets/README.md` + `tickets/` (Anara's decision — rules for recording Rayls team Q&A). Kept untouched: all raw evidence, the TX package, the journey, runs data, scripts, and all frozen docs (r1/r2/r3, addendum F17, TX ADDENDUM, initial audit report). No ticket sent. No push — push only after Anara's separate approval.
+- Governing interpretation unchanged: r3 + addendum F17 remain the latest authority; old labels in `audit_summary.json` q8 / TX report Q8 / `fee.comparison` are superseded (see INDEX.md §11).
+- Note (execution): the `docs-review/` deletion removed the folder, but its rules live on in INDEX.md §10; the `findings/` and `raw-data/` subfolder READMEs held more than one-line rules, so their entry/storage rules were transplanted in full rather than dropped.
 
 ## Standing unknowns (consolidated, 22 Nov 2026)
 

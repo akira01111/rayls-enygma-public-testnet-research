@@ -1063,3 +1063,59 @@ in `experiments/testnet-journeys/week2-private-payment/`:
 - The audit is a report, not a re-runnable step: its numbers re-derive
   from the TX package (§2–§3) and the journey video (§4). It does not
   change raw evidence, the comparator, or the video/VO originals.
+
+## 8. Datasets + audit_report.json (root, 22 Nov 2026)
+
+Tabular datasets derived deterministically from the TX package JSONs
+(`experiments/transactions/tx-09edab2b/`), plus a machine-readable summary
+at the repo root. Added in the Phase 1 restructure; no raw evidence was
+changed to produce them.
+
+### What exists
+
+| File | Rows | Source | Rule |
+|---|---|---|---|
+| `datasets/tx_logs.csv` | 7 | `raw/logs.json` + `decoded/decoded_events.json` | One row per log, ordered by logIndex; event name + decoded fields from the decoded file |
+| `datasets/registry_usernames.csv` | 195 | `raw/registry-usernames.json` | username = ABI-decode of `data` (offset 0x20, length N, N ASCII bytes); address = topics[1] last 20 bytes |
+| `datasets/statement.csv` | 10 | `raw/transaction.json` (calldata, re-parsed) + `decoded_events.json` + r3 §4.1/F17 labels | One row per statement word; classifications from r3/F17, NOT from the old JSON labels |
+| `datasets/relayer_txs.csv` | 2 | `raw/explorer-relayer-txlist.json` | Deduplicated by tx hash (the 2 calls return the same 2 txs; only `confirmations` differs between calls — call-time metadata, excluded) |
+| `audit_report.json` | — | 11 JSON sources (see `datasets/build_datasets.py`) | Generated; `integrity` (PASS = data integrity + internal consistency only) vs `findings` (each finding classified) |
+
+### Reproduce
+
+```bash
+# Rebuild everything from the JSON sources (refuses to overwrite: delete
+# the outputs first, in a scratch copy — never in the committed tree):
+python3 datasets/build_datasets.py
+# expect: build_datasets: OK; 7 / 195 / 10 / 2 rows; manifests TX 20/20, journey 16/16
+
+# Verify the committed files without rebuilding:
+python3 datasets/verify_datasets.py
+# expect: 9/9 checks PASS, exit 0
+
+# Check the checksums file:
+sha256sum -c datasets/datasets_checksums.sha256
+# expect: 5 entries OK (run from datasets/; the audit_report.json entry
+# is listed as ../audit_report.json)
+```
+
+### What the verifier does NOT do
+
+`verify_datasets.py` re-derives the CSVs and checks `audit_report.json`
+field by field, but it does NOT run the TX verifier
+(`scripts/verify_tx_audit_09edab2b.py`, 23/23) — run that separately
+(§3). It also does not re-run the Module 01 fetch (§1). The
+`audit_report.json` `verifier` field is a recorded value from the
+22 Nov 2026 run, not a live re-run.
+
+### Governing interpretation
+
+The CSVs and `audit_report.json` use the r3 §4.1 / addendum F17 labels.
+The old JSONs' labels are superseded and were deliberately NOT copied:
+`audit_summary.json` q8 and `decoded_events.json` `fee.comparison` call
+statement[8] "the TOTAL fee … = 4.416 RLS exactly" as a verified fact —
+per F17b the integer is a verified fact, the RLS unit is an
+interpretation, and "total fee" is an inference. Event names in
+`tx_logs.csv` are signature matches against the demo-bundle ABI, not
+verified vault source (the deployed vault implementation has no verified
+source). See `datasets/README.md` and INDEX.md §11.

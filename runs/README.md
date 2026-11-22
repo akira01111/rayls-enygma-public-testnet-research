@@ -63,7 +63,7 @@ directory paths, so `sha256sum -c` cannot verify it directly from any
 directory — the files live in `raw-data/rpc-responses/` and `datasets/`.
 Its three entries were verified individually on 21 Nov 2026 against the
 actual files (all OK) and against the six-file hash list in
-`01-no-overwrite-fix-report.md` (all six OK). Manifests from v2.0.0
+`runs/01-no-overwrite-fix-report.md` (all six OK). Manifests from v2.0.0
 onward use run-dir-relative paths and are directly verifiable with the
 command above.
 
