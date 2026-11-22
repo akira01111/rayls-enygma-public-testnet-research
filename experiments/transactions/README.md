@@ -1,15 +1,7 @@
-# transactions
+# Transaction audit packages
 
-Records of individual testnet transactions from experiments.
-
-Each entry records the purpose, the method called, the contract addressed,
-the transaction hash, the receipt, and the outcome that was observed. A
-transaction is only listed here if it was actually sent.
+The [transaction package guide](tx-09edab2b/README.md) links captured responses to decoded records, derived datasets, scripts, the manifest, and audit notes.
 
 ## Completed
 
-- `tx-09edab2b/` — Week 2 experiment: private payment of 6 RLS from @anara
-  to @kittynim (block 24825928, transferV2 to SharedVault). Raw JSON,
-  decoded JSON, manifest, report, gaps, TODO, and addendum. Verified with
-  `scripts/verify_tx_audit_09edab2b.py` (23/23 checks). Receiver @kittynim
-  confirmed by the account owner, 22 Nov 2026.
+- [TX `0x09edab2b...` - Week 2 private payment](tx-09edab2b/README.md): transaction package for block 24825928. Its evidence labels follow the r3 audit and F17 addendum; package integrity checks do not validate interpretations.
